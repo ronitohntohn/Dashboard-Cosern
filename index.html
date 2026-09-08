@@ -217,7 +217,7 @@
     /* --- CARD COMBINADO: Notas Última Hora + Qualidade --- */
     .combo-card{
       padding:16px 20px;
-      grid-column: span 1; /* para caber no grid */
+      grid-column: span 1;
     }
     .combo-container{
       display:flex;
@@ -694,7 +694,7 @@
           </div>
         </div>
 
-        <!-- Métricas principais (grid 5 itens, mas o último é o combo) -->
+        <!-- Métricas principais (grid 5 itens) -->
         <div class="metric-grid" style="grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));">
           <div class="metric-card" style="border-left:4px solid var(--primary);">
             <span class="metric-icon">📆</span>
@@ -745,11 +745,11 @@
               <div class="quality-summary">
                 <div class="item">
                   <span class="tag">Individual</span>
-                  <span class="value na" id="qualidadeIndividual">--%</span>
+                  <span class="value na" id="qualidadeIndividual">—</span>
                 </div>
                 <div class="item">
                   <span class="tag">Equipe</span>
-                  <span class="value na" id="qualidadeEquipe">--%</span>
+                  <span class="value na" id="qualidadeEquipe">—</span>
                 </div>
               </div>
               <!-- Detalhes expansíveis -->
@@ -760,7 +760,7 @@
                 </div>
                 <div class="detail-row">
                   <span class="label">📈 Progresso Individual</span>
-                  <span class="val" id="progressoIndividual">--</span>
+                  <span class="val" id="progressoIndividual">—</span>
                 </div>
                 <div class="progress-bar"><div class="fill" id="barraIndividual" style="width:0%;"></div></div>
 
@@ -770,7 +770,7 @@
                 </div>
                 <div class="detail-row">
                   <span class="label">📈 Progresso Equipe</span>
-                  <span class="val" id="progressoEquipe">--</span>
+                  <span class="val" id="progressoEquipe">—</span>
                 </div>
                 <div class="progress-bar"><div class="fill" id="barraEquipe" style="width:0%;"></div></div>
 
@@ -950,7 +950,7 @@
 
   <script>
     // ============================================================
-    // CONFIGURAÇÕES GERAIS (MANTIDAS)
+    // CONFIGURAÇÕES GERAIS
     // ============================================================
     const SHEET_ID = '18fouQ0lBF5fKKB8kovxNNK-ww187kQVqZiETMfK-x3o';
     const LINKS_SHEET_ID = '1m_sD07RmMn4W-i7-aLtCOL8N1SntoZnp03aExbn6F6c';
@@ -974,7 +974,7 @@
     let refreshInterval = null;
 
     // ============================================================
-    // FUNÇÕES GOOGLE SHEETS (MANTIDAS)
+    // FUNÇÕES GOOGLE SHEETS
     // ============================================================
     async function gviz(sheetId, sheetName) {
       const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&t=${Date.now()}`;
@@ -1041,7 +1041,7 @@
     }
 
     // ============================================================
-    // FUNÇÕES DE DATA E MONITORIAS (MANTIDAS)
+    // FUNÇÕES DE DATA E MONITORIAS
     // ============================================================
     function parseDataHora(str) {
       if (!str) return null;
@@ -1124,7 +1124,7 @@
     }
 
     // ============================================================
-    // FUNÇÕES DE NOMES E FILTROS (MANTIDAS)
+    // FUNÇÕES DE NOMES E FILTROS
     // ============================================================
     function obterNomeMatricula(mat) { const matNorm = String(mat).trim(); const nome = usuariosMap[matNorm] || matNorm; return nome !== matNorm ? `${nome} (${matNorm})` : matNorm; }
     function obterNome(mat) { const matNorm = String(mat).trim(); return usuariosMap[matNorm] || matNorm; }
@@ -1135,7 +1135,7 @@
     }
 
     // ============================================================
-    // CÁLCULO DE MÉTRICAS (MANTIDO)
+    // CÁLCULO DE MÉTRICAS (incluindo qualidade real)
     // ============================================================
     function calcularMetricas(rows) {
       const hoje = new Date();
@@ -1215,7 +1215,31 @@
     }
 
     // ============================================================
-    // FUNÇÃO PARA EXIBIR DETALHES DO ATENDENTE (NOVO)
+    // CÁLCULO DE QUALIDADE (REAL, a partir das monitorias)
+    // ============================================================
+    function calcularQualidade(matricula) {
+      const monitorias = monitoriasData.filter(item => item.matricula === matricula);
+      if (monitorias.length === 0) return null; // sem dados
+      const total = monitorias.length;
+      const semErro = monitorias.filter(item => !item.motivo || item.motivo.trim() === '').length;
+      return (semErro / total) * 100;
+    }
+
+    function calcularQualidadeEquipe() {
+      // Média das qualidades individuais de todos os atendentes que têm monitorias
+      const mats = [...new Set(monitoriasData.map(item => item.matricula).filter(Boolean))];
+      if (mats.length === 0) return null;
+      let soma = 0, cont = 0;
+      for (const mat of mats) {
+        const q = calcularQualidade(mat);
+        if (q !== null) { soma += q;
+          cont++; }
+      }
+      return cont > 0 ? soma / cont : null;
+    }
+
+    // ============================================================
+    // FUNÇÃO PARA EXIBIR DETALHES DO ATENDENTE (com qualidade real)
     // ============================================================
     function showAgentDetails(matricula) {
       const modal = document.getElementById('agentDetailModal');
@@ -1228,6 +1252,9 @@
       if (notas.length === 0) { content.innerHTML = `<div class="text-muted">Nenhuma nota encontrada para este atendente.</div>`; modal.style.display = 'flex'; return; }
       const metrics = calcularMetricas(notas);
       const adicionais = calcularAdicionais(metrics.feitasHoje, metrics.feitasMes);
+      const q = calcularQualidade(matNorm);
+      const qualidadeDisplay = q !== null ? q.toFixed(1) + '%' : '—';
+
       const sorted = [...notas].sort((a, b) => {
         const tsA = parseTimestampFull(a["Carimbo de data/hora"]);
         const tsB = parseTimestampFull(b["Carimbo de data/hora"]);
@@ -1251,6 +1278,7 @@
             <div><strong>📈 Média diária:</strong> ${adicionais.mediaDiaria}</div>
             <div><strong>🎯 Dias para meta:</strong> ${adicionais.diasParaMeta > 0 ? adicionais.diasParaMeta : '✅'}</div>
             <div><strong>📊 Total de notas:</strong> ${metrics.totalNotas}</div>
+            <div><strong>📈 Qualidade individual:</strong> ${qualidadeDisplay}</div>
           </div>
           <div style="background:var(--bg-start); padding:14px; border-radius:16px; border:1px solid var(--glass-border);">
             <div><strong>✅ Finalizadas Cria (hoje):</strong> ${metrics.finalizadasCriaHoje}</div>
@@ -1274,7 +1302,7 @@
     }
 
     // ============================================================
-    // ATUALIZAÇÃO DA INTERFACE (MODIFICADA PARA INCLUIR QUALIDADE)
+    // ATUALIZAÇÃO DA INTERFACE (com qualidade real)
     // ============================================================
     async function atualizarTudo() {
       await carregarDadosConsolidados();
@@ -1316,23 +1344,28 @@
       document.getElementById('viteTotal').innerText = metrics.viteTotal;
       document.getElementById('notasUltimaHoraMetrica').innerText = metrics.notasUltimaHora;
 
-      // Atualiza também o valor da equipe (se supervisor, mostra total da equipe; senão, mostra o próprio)
       const notasEquipe = isSupervisor ? metricsEquipe.notasUltimaHora : metrics.notasUltimaHora;
       document.getElementById('notasUltimaHoraEquipe').innerText = `equipe: ${notasEquipe}`;
 
-      // ===== WIDGET DE QUALIDADE (SIMULAÇÃO) =====
-      // Aqui você pode integrar com dados reais de qualidade, se disponíveis.
-      // Por enquanto, usamos valores fictícios para demonstração.
-      const qualInd = 94.5;   // exemplo
-      const qualEq = 97.2;    // exemplo
-      document.getElementById('qualidadeIndividual').innerText = `${qualInd}%`;
-      document.getElementById('qualidadeEquipe').innerText = `${qualEq}%`;
-      document.getElementById('qualidadeIndividual').className = `value ${qualInd < 96 ? 'na' : ''}`;
-      document.getElementById('qualidadeEquipe').className = `value ${qualEq < 96 ? 'na' : ''}`;
-      document.getElementById('progressoIndividual').innerText = `${qualInd}%`;
-      document.getElementById('progressoEquipe').innerText = `${qualEq}%`;
-      document.getElementById('barraIndividual').style.width = `${Math.min(100, qualInd)}%`;
-      document.getElementById('barraEquipe').style.width = `${Math.min(100, qualEq)}%`;
+      // ===== WIDGET DE QUALIDADE (REAL) =====
+      let qualInd = null;
+      if (currentUser) {
+        qualInd = calcularQualidade(currentUser.matricula);
+      }
+      let qualEq = calcularQualidadeEquipe();
+
+      const displayVal = (val) => val !== null ? val.toFixed(1) + '%' : '—';
+      const displayProgress = (val) => val !== null ? val.toFixed(1) + '%' : '—';
+      const barWidth = (val) => val !== null ? Math.min(100, val) : 0;
+
+      document.getElementById('qualidadeIndividual').innerText = displayVal(qualInd);
+      document.getElementById('qualidadeEquipe').innerText = displayVal(qualEq);
+      document.getElementById('qualidadeIndividual').className = `value ${qualInd === null ? 'na' : ''}`;
+      document.getElementById('qualidadeEquipe').className = `value ${qualEq === null ? 'na' : ''}`;
+      document.getElementById('progressoIndividual').innerText = displayProgress(qualInd);
+      document.getElementById('progressoEquipe').innerText = displayProgress(qualEq);
+      document.getElementById('barraIndividual').style.width = barWidth(qualInd) + '%';
+      document.getElementById('barraEquipe').style.width = barWidth(qualEq) + '%';
 
       // Gráfico status
       if (statusChart) statusChart.destroy();
@@ -1443,7 +1476,7 @@
     }
 
     // ============================================================
-    // RENDERIZAR TABELA COMPLETA (MANTIDA)
+    // RENDERIZAR TABELA COMPLETA
     // ============================================================
     function renderizarTabelaCompleta(dados) {
       const search = document.getElementById('searchTab')?.value.toLowerCase() || '';
@@ -1507,7 +1540,7 @@
     }
 
     // ============================================================
-    // TOGGLE QUALIDADE (NOVO)
+    // TOGGLE QUALIDADE
     // ============================================================
     function toggleQuality(event) {
       event.stopPropagation();
@@ -1516,7 +1549,7 @@
     }
 
     // ============================================================
-    // MODAIS (MANTIDOS)
+    // MODAIS
     // ============================================================
     function openHourDetail() {
       const modal = document.getElementById('hourDetailModal');
@@ -1557,9 +1590,6 @@
       const modal = document.getElementById('hourDetailModal');
       document.getElementById('closeHourDetailBtn').addEventListener('click', () => modal.style.display = 'none');
       window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
-      // O gatilho agora é o card combinado? Mas mantemos o clique no card de métrica antigo? Vamos adicionar um clique no card combo? 
-      // Adicionamos um botão ou área clicável? O usuário quer ver o detalhamento por hora. Vamos adicionar um clique no ícone de relógio ou no texto.
-      // Vou deixar o clique no card combinado (área esquerda) para abrir.
       document.querySelector('.combo-card .last-hour-notes').addEventListener('click', openHourDetail);
     }
 
@@ -1614,7 +1644,7 @@
     }
 
     // ============================================================
-    // LOGIN (MANTIDO)
+    // LOGIN
     // ============================================================
     async function fazerLogin(mat, sen) {
       const creds = await carregarAba(SHEET_ID, ABA_CREDENCIAIS);
@@ -1762,7 +1792,6 @@
           widget.classList.remove('expanded');
         }
       });
-      // Impede propagação no widget
       document.getElementById('qualityWidget').addEventListener('click', function(e) {
         e.stopPropagation();
       });
