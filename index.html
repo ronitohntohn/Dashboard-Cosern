@@ -958,7 +958,7 @@
     const ABAS_PRODUTIVIDADE = ['Dashboard', 'Produtividade Mensal Roniton'];
     const ABA_MONITORIA = 'Monitorias';
     const ABA_LINKS = 'Página1';
-    // Novas abas de qualidade
+    // Abas de qualidade (ajuste os nomes conforme sua planilha)
     const ABA_QUALIDADE_INDIVIDUAL = 'Qualidade Individual';
     const ABA_QUALIDADE_EQUIPE = 'Qualidade da Equipe';
 
@@ -1051,6 +1051,7 @@
       qualidadeEquipeData = await carregarAba(SHEET_ID, ABA_QUALIDADE_EQUIPE);
       console.log(`✅ Qualidade Individual: ${qualidadeIndividualData.length} registros`);
       console.log(`✅ Qualidade da Equipe: ${qualidadeEquipeData.length} registros`);
+      console.log('Amostra qualidade equipe:', qualidadeEquipeData.slice(0, 3));
     }
 
     // ============================================================
@@ -1228,10 +1229,10 @@
     }
 
     // ============================================================
-    // FUNÇÕES DE QUALIDADE (lendo das abas específicas)
+    // FUNÇÕES DE QUALIDADE (CORRIGIDAS)
     // ============================================================
     function obterQualidadeIndividual(matricula) {
-      if (!qualidadeIndividualData.length) return null;
+      if (!qualidadeIndividualData || !qualidadeIndividualData.length) return null;
       const filtrados = qualidadeIndividualData.filter(item => {
         const mat = String(item.MATRICULA || '').trim();
         return mat === matricula;
@@ -1247,14 +1248,26 @@
         return db - da;
       });
       const maisRecente = filtrados[0];
-      const valor = parseFloat(maisRecente['QUALIDADE INDIVIDUAL']);
+      // Procurar a coluna que contém "QUALIDADE" e "INDIVIDUAL"
+      const keys = Object.keys(maisRecente);
+      const colunaQualidade = keys.find(k => /qualidade.*individual/i.test(k));
+      if (!colunaQualidade) {
+        console.warn('Coluna "Qualidade Individual" não encontrada. Chaves:', keys);
+        return null;
+      }
+      const valorRaw = maisRecente[colunaQualidade];
+      const valorStr = String(valorRaw).replace(/%/g, '').replace(',', '.').trim();
+      const valor = parseFloat(valorStr);
       return isNaN(valor) ? null : valor;
     }
 
     function obterQualidadeEquipe() {
-      if (!qualidadeEquipeData.length) return null;
-      // Ordenar por data decrescente
-      const sorted = [...qualidadeEquipeData].sort((a,b) => {
+      if (!qualidadeEquipeData || !qualidadeEquipeData.length) {
+        console.warn('Nenhum dado de qualidade da equipe.');
+        return null;
+      }
+      // Ordenar por DATA decrescente (mais recente primeiro)
+      const sorted = [...qualidadeEquipeData].sort((a, b) => {
         const da = parseDataHora(a.DATA);
         const db = parseDataHora(b.DATA);
         if (!da && !db) return 0;
@@ -1263,12 +1276,30 @@
         return db - da;
       });
       const maisRecente = sorted[0];
-      const valor = parseFloat(maisRecente['QUALIDADE DA EQUIPE']);
+      // Procurar a coluna que contém "QUALIDADE" e "EQUIPE" (case insensitive)
+      const keys = Object.keys(maisRecente);
+      const colunaQualidade = keys.find(k => /qualidade.*equipe/i.test(k));
+      if (!colunaQualidade) {
+        console.warn('Coluna "Qualidade da Equipe" não encontrada. Chaves disponíveis:', keys);
+        // Fallback: tentar pegar a coluna que contém "QUALIDADE" (pode ser a única)
+        const fallback = keys.find(k => /qualidade/i.test(k));
+        if (fallback) {
+          console.warn(`Usando coluna "${fallback}" como fallback.`);
+          const valorRaw = maisRecente[fallback];
+          const valorStr = String(valorRaw).replace(/%/g, '').replace(',', '.').trim();
+          const valor = parseFloat(valorStr);
+          return isNaN(valor) ? null : valor;
+        }
+        return null;
+      }
+      const valorRaw = maisRecente[colunaQualidade];
+      const valorStr = String(valorRaw).replace(/%/g, '').replace(',', '.').trim();
+      const valor = parseFloat(valorStr);
       return isNaN(valor) ? null : valor;
     }
 
     // ============================================================
-    // FUNÇÃO PARA EXIBIR DETALHES DO ATENDENTE (com qualidade real)
+    // FUNÇÃO PARA EXIBIR DETALHES DO ATENDENTE
     // ============================================================
     function showAgentDetails(matricula) {
       const modal = document.getElementById('agentDetailModal');
