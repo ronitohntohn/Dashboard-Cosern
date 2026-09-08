@@ -1,37 +1,36 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>Cosern · Produtividade + Monitorias</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+  <title>Cosern · Produtividade + Monitorias + Qualidade</title>
+  <!-- Favicon Neoenergia (SVG inline) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text><text y='.9em' font-size='40' x='30' y='70' fill='%230057a0'>N</text></svg>" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js">
+  </script>
   <style>
-    /* (mesmo CSS do último – compactado para caber) */
-    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}:root{--primary:#0057a0;--primary-light:#1a7bc4;--primary-dark:#003d73;--secondary:#00a651;--accent:#ff6b35;--bg-start:#e8eef5;--bg-end:#d0dcec;--card-bg:rgba(255,255,255,0.7);--glass-border:rgba(255,255,255,0.3);--text:#1a2c3e;--text-muted:#5a6874;--shadow:0 12px 32px rgba(0,0,0,0.08);--radius:24px;--transition:0.3s cubic-bezier(0.4,0,0.2,1)}body.dark{--bg-start:#0b101a;--bg-end:#141c2b;--card-bg:rgba(20,26,40,0.85);--glass-border:rgba(255,255,255,0.08);--text:#edf2f8;--text-muted:#9ea7bb;--shadow:0 12px 32px rgba(0,0,0,0.4)}body{font-family:'Inter',sans-serif;background:linear-gradient(145deg,var(--bg-start),var(--bg-end));color:var(--text);min-height:100vh;padding:20px;transition:background .4s,color .3s}::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--primary-light);border-radius:10px}
+    /* (mesmo CSS do anterior – compactado para caber) */
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}:root{--primary:#0057a0;--primary-light:#1a7bc4;--primary-dark:#003d73;--secondary:#00a651;--accent:#ff6b35;--bg-start:#e8eef5;--bg-end:#d0dcec;--card-bg:rgba(255,255,255,0.7);--glass-border:rgba(255,255,255,0.3);--text:#1a2c3e;--text-muted:#5a6874;--shadow:0 12px 32px rgba(0,0,0,0.08);--radius:24px;--transition:0.3s cubic-bezier(0.4,0,0.2,1);--qual-green:#2e7d32;--qual-yellow:#f9a825;--qual-red:#c62828;--qual-green-bg:#e8f5e9;--qual-yellow-bg:#fff8e1;--qual-red-bg:#ffebee}body.dark{--bg-start:#0b101a;--bg-end:#141c2b;--card-bg:rgba(20,26,40,0.85);--glass-border:rgba(255,255,255,0.08);--text:#edf2f8;--text-muted:#9ea7bb;--shadow:0 12px 32px rgba(0,0,0,0.4);--qual-green-bg:#1a3a2a;--qual-yellow-bg:#3a3a1a;--qual-red-bg:#3a1a1a}body{font-family:'Inter',sans-serif;background:linear-gradient(145deg,var(--bg-start),var(--bg-end));color:var(--text);min-height:100vh;padding:20px;transition:background .4s,color .3s}::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--primary-light);border-radius:10px}
     .login-container{max-width:420px;width:92%;margin:80px auto;background:var(--card-bg);backdrop-filter:blur(20px);border-radius:var(--radius);padding:48px 32px;box-shadow:var(--shadow),0 0 0 1px var(--glass-border);text-align:center;animation:fadeUp .6s ease}@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}.login-container h2{font-weight:800;font-size:34px;letter-spacing:-.5px;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}.login-container .sub{color:var(--text-muted);font-size:14px;margin-bottom:32px}.login-container input{width:100%;padding:14px 18px;border-radius:16px;border:1px solid var(--glass-border);background:rgba(255,255,255,0.5);backdrop-filter:blur(4px);font-size:14px;margin-top:8px;transition:border .2s,box-shadow .2s;color:var(--text)}body.dark .login-container input{background:rgba(255,255,255,0.08)}.login-container input:focus{outline:none;border-color:var(--primary-light);box-shadow:0 0 0 4px rgba(0,87,160,0.15)}.login-container .btn{width:100%;margin-top:24px;background:var(--primary);border:none;padding:14px;border-radius:40px;color:#fff;font-weight:600;font-size:16px;cursor:pointer;transition:background .2s,transform .1s;display:block}.login-container .btn:hover{background:var(--primary-dark)}.login-container .btn:active{transform:scale(.97)}.error-msg{color:#d32f2f;margin-top:16px;font-size:14px;display:none}
-    #dashboard{display:none;max-width:1440px;margin:0 auto;animation:fadeUp .5s ease}.app-wrapper{display:flex;gap:24px}.dashboard-container{flex:1;min-width:0}
-    .sidebar-panel{width:0;overflow:hidden;transition:width .35s ease;background:var(--card-bg);backdrop-filter:blur(16px);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--glass-border);position:sticky;top:20px;height:calc(100vh - 40px);display:flex;flex-direction:column;flex-shrink:0}.sidebar-panel.open{width:360px}.sidebar-content{padding:24px;overflow-y:auto;flex:1}.sidebar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--glass-border)}.sidebar-header h3{font-weight:700;font-size:18px}.close-sidebar{background:transparent;border:none;font-size:24px;cursor:pointer;color:var(--text-muted)}.sidebar-content h4{font-weight:600;margin:16px 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)}
+    #dashboard{display:none;max-width:1440px;margin:0 auto;animation:fadeUp .5s ease}.app-wrapper{display:flex;gap:24px}.dashboard-container{flex:1;min-width:0}.sidebar-panel{width:0;overflow:hidden;transition:width .35s ease;background:var(--card-bg);backdrop-filter:blur(16px);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--glass-border);position:sticky;top:20px;height:calc(100vh - 40px);display:flex;flex-direction:column;flex-shrink:0}.sidebar-panel.open{width:360px}.sidebar-content{padding:24px;overflow-y:auto;flex:1}.sidebar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--glass-border)}.sidebar-header h3{font-weight:700;font-size:18px}.close-sidebar{background:transparent;border:none;font-size:24px;cursor:pointer;color:var(--text-muted)}.sidebar-content h4{font-weight:600;margin:16px 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)}
     .card{background:var(--card-bg);backdrop-filter:blur(12px);border-radius:var(--radius);padding:20px 24px;margin-bottom:20px;box-shadow:var(--shadow);border:1px solid var(--glass-border);transition:transform .2s,box-shadow .2s}.card:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(0,0,0,0.08)}
-    .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:20px}.metric-card{background:var(--card-bg);backdrop-filter:blur(8px);border-radius:20px;padding:18px 14px;border:1px solid var(--glass-border);box-shadow:var(--shadow);text-align:center;position:relative;cursor:pointer;transition:transform .25s,box-shadow .25s}.metric-card:hover{transform:translateY(-6px);box-shadow:0 16px 32px rgba(0,0,0,0.1)}.metric-card .metric-icon{font-size:28px;display:block;margin-bottom:4px}.metric-label{font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.3px;font-weight:600}.metric-value{font-size:30px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--text);line-height:1.2}.meta-fixa{font-size:11px;color:var(--text-muted);margin-top:2px}.metric-card .expand-icon{position:absolute;top:6px;right:10px;font-size:14px;color:var(--text-muted);opacity:.4}
+    .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:20px}.metric-card{background:var(--card-bg);backdrop-filter:blur(8px);border-radius:20px;padding:18px 14px;border:1px solid var(--glass-border);box-shadow:var(--shadow);text-align:center;position:relative;cursor:default;transition:transform .25s,box-shadow .25s}.metric-card:hover{transform:translateY(-6px);box-shadow:0 16px 32px rgba(0,0,0,0.1)}.metric-card .metric-icon{font-size:28px;display:block;margin-bottom:4px}.metric-label{font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.3px;font-weight:600}.metric-value{font-size:30px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--text);line-height:1.2}.meta-fixa{font-size:11px;color:var(--text-muted);margin-top:2px}.metric-card .expand-icon{position:absolute;top:6px;right:10px;font-size:14px;color:var(--text-muted);opacity:.4}
     .badge{display:inline-flex;padding:4px 14px;border-radius:40px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}.badge-finl{background:#d4edda;color:#0f5c3f}.badge-redi{background:#fff3cd;color:#856404}.badge-veri{background:#cce5ff;color:#004085}.badge-vite{background:#f8d7da;color:#721c24}body.dark .badge-finl{background:#1a3c2c;color:#2bc48a}body.dark .badge-redi{background:#3e2e1a;color:#f4b342}body.dark .badge-veri{background:#1a3e44;color:#4dd0e1}body.dark .badge-vite{background:#4a1a1a;color:#f05a5a}
     .table-wrapper{overflow-x:auto;margin-top:8px}table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;padding:10px 8px;font-weight:600;color:var(--text-muted);border-bottom:2px solid var(--glass-border)}td{padding:10px 8px;border-bottom:1px solid var(--glass-border)}
     .filter-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;align-items:center}.filter-bar input,.filter-bar select{padding:10px 16px;border-radius:40px;border:1px solid var(--glass-border);background:rgba(255,255,255,0.4);backdrop-filter:blur(4px);color:var(--text);flex:1;min-width:140px;font-size:13px;transition:border .2s}body.dark .filter-bar input,body.dark .filter-bar select{background:rgba(255,255,255,0.06)}.filter-bar input:focus,.filter-bar select:focus{outline:none;border-color:var(--primary-light)}.filter-bar .btn-clear-data{padding:4px 16px;font-size:12px;background:var(--primary);color:#fff;border:none;border-radius:40px;cursor:pointer;transition:background .2s}.filter-bar .btn-clear-data:hover{background:var(--primary-dark)}
     .btn{background:var(--primary);border:none;padding:10px 22px;border-radius:40px;color:#fff;font-weight:600;cursor:pointer;transition:background .2s,transform .1s,box-shadow .2s;font-size:14px;display:inline-flex;align-items:center;gap:6px;text-decoration:none}.btn:hover{background:var(--primary-dark);box-shadow:0 4px 12px rgba(0,87,160,0.3)}.btn:active{transform:scale(.96)}.btn-sidebar{background:var(--glass-border);border:none;padding:8px 18px;border-radius:40px;font-weight:600;cursor:pointer;color:var(--text);transition:.2s}.btn-sidebar:hover{background:var(--primary-light);color:#fff}.btn-logout{background:transparent;border:1px solid var(--glass-border);padding:8px 18px;border-radius:40px;font-weight:600;cursor:pointer;color:var(--text-muted);transition:.2s}.btn-logout:hover{background:#fee2e2;color:#b91c1c;border-color:#fecaca}
     .top-bar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:24px;padding:12px 20px;background:var(--card-bg);backdrop-filter:blur(12px);border-radius:60px;border:1px solid var(--glass-border);box-shadow:var(--shadow)}.user-info{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.user-info strong{font-weight:700;font-size:16px}.theme-toggle{cursor:pointer;font-size:26px;background:transparent;border:none;color:var(--text);transition:.2s}
+    .progress-bar{width:100%;height:10px;background:var(--glass-border);border-radius:10px;margin:8px 0 4px;overflow:hidden}.progress-fill{height:100%;background:var(--primary);border-radius:10px;transition:width .4s ease;width:0%}
     .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);align-items:center;justify-content:center;z-index:1000;padding:20px}.modal-content{background:var(--card-bg);backdrop-filter:blur(20px);border-radius:32px;width:100%;max-width:720px;max-height:90vh;overflow-y:auto;padding:32px;animation:fadeUp .25s ease;border:1px solid var(--glass-border);box-shadow:0 20px 48px rgba(0,0,0,0.15);position:relative}.modal-content h2{font-weight:700;margin-bottom:6px;color:var(--primary)}.modal-content .sub{color:var(--text-muted);font-size:14px;margin-bottom:20px}.modal-close{background:transparent;border:none;font-size:24px;cursor:pointer;color:var(--text-muted);position:absolute;top:16px;right:20px}
     .fab{position:fixed;bottom:24px;right:24px;width:58px;height:58px;border-radius:50%;background:var(--primary);border:none;color:#fff;font-size:26px;cursor:pointer;box-shadow:0 6px 24px rgba(0,87,160,0.35);transition:transform .3s,background .2s;z-index:99;display:flex;align-items:center;justify-content:center}.fab:hover{background:var(--primary-dark);transform:scale(1.05)}.fab:active{transform:scale(.9)}
-    .nota-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--glass-border);font-size:12px;align-items:center;gap:8px}.nota-item:last-child{border-bottom:none}
+    .nota-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--glass-border);font-size:12px;align-items:center;gap:8px}.nota-item:last-child{border-bottom:none}.clickable-name{cursor:pointer;color:var(--primary);font-weight:500;transition:color .2s;text-decoration:underline dotted}.clickable-name:hover{color:var(--primary-dark)}
     .ranking-item{display:flex;align-items:center;padding:8px 12px;margin:4px 0;border-radius:16px;background:var(--bg-start);border:1px solid var(--glass-border);cursor:pointer;transition:background .2s}.ranking-item:hover{background:var(--primary-light);color:#fff}.ranking-item .pos{font-weight:700;width:30px}.ranking-item .stars{color:#f5b342;margin-left:8px}.ranking-item .name{flex:1;font-weight:500}.ranking-item .count{font-weight:600;font-family:'JetBrains Mono',monospace}
-    .link-item{display:flex;align-items:center;padding:12px 16px;margin:6px 0;border-radius:16px;background:var(--bg-start);border:1px solid var(--glass-border);transition:background .2s,transform .2s;text-decoration:none;color:var(--text)}.link-item:hover{background:var(--primary-light);color:#fff;transform:translateX(4px)}.link-item .link-icon{font-size:20px;margin-right:14px}.link-item .link-name{flex:1;font-weight:500}.link-item .link-url{font-size:12px;color:var(--text-muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.link-item:hover .link-url{color:rgba(255,255,255,0.8)}
-    .hour-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.hour-detail-grid .list{max-height:300px;overflow-y:auto}
-    @media(max-width:860px){.app-wrapper{flex-direction:column}.sidebar-panel{position:fixed;top:0;left:0;width:100%!important;height:100vh;border-radius:0;z-index:999;transform:translateX(-100%);transition:transform .35s ease;box-shadow:0 0 40px rgba(0,0,0,0.2)}.sidebar-panel.open{transform:translateX(0);width:100%!important}.top-bar{flex-direction:column;align-items:stretch;border-radius:24px}.user-info{flex-wrap:wrap}.metric-grid{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}.metric-value{font-size:24px}}
-    @media(max-width:480px){body{padding:12px}.login-container{margin:40px auto;padding:24px 16px}.card{padding:16px}.modal-content{padding:20px}.hour-detail-grid{grid-template-columns:1fr}.top-bar{padding:10px}.metric-grid{grid-template-columns:1fr 1fr}}
-    @media(orientation:landscape)and(max-height:500px){.login-container{margin:20px auto;padding:20px}.top-bar{padding:8px 14px}.metric-grid{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}.metric-card{padding:10px}.metric-value{font-size:20px}}
-    .clickable-date{cursor:pointer;color:var(--primary);text-decoration:underline dotted;font-weight:500}.clickable-date:hover{color:var(--primary-dark)}
+    .qual-individual-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:12px}.qual-card{background:var(--bg-start);border-radius:16px;padding:14px 16px;border:1px solid var(--glass-border);display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s;cursor:pointer}.qual-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,0.06)}.qual-card .q-nome{font-weight:600;font-size:14px;margin-bottom:6px}.qual-card .q-mat{font-size:11px;color:var(--text-muted)}.qual-card .q-row{display:flex;justify-content:space-between;align-items:center;margin-top:4px;font-size:13px}.qual-card .q-val{font-weight:700;font-family:'JetBrains Mono',monospace;font-size:18px}.qual-card .q-trend{font-size:18px;margin-left:4px}.qual-card .q-trend.up{color:var(--qual-green)}.qual-card .q-trend.down{color:var(--qual-red)}.qual-card .q-trend.same{color:var(--text-muted)}.qual-badge{display:inline-block;padding:2px 12px;border-radius:30px;font-size:12px;font-weight:600}.qual-badge.green{background:var(--qual-green-bg);color:var(--qual-green)}.qual-badge.yellow{background:var(--qual-yellow-bg);color:var(--qual-yellow)}.qual-badge.red{background:var(--qual-red-bg);color:var(--qual-red)}
+    .qual-equipe-card{background:var(--bg-start);border-radius:20px;padding:20px 24px;border:2px solid var(--glass-border);text-align:center;max-width:300px;margin:0 auto}.qual-equipe-card .q-big{font-size:56px;font-weight:800;font-family:'JetBrains Mono',monospace}.qual-equipe-card .q-label{font-size:14px;color:var(--text-muted);margin-top:4px}.qual-equipe-card .q-status{margin-top:8px;font-weight:600;font-size:14px}
     .supervisor-settings{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid var(--glass-border)}.supervisor-settings label{display:flex;align-items:center;gap:8px;font-weight:500}.supervisor-settings input{width:90px;padding:6px 10px;border-radius:30px;border:1px solid var(--glass-border);background:rgba(255,255,255,0.4);backdrop-filter:blur(4px);color:var(--text);font-weight:600;text-align:center}body.dark .supervisor-settings input{background:rgba(255,255,255,0.06)}
-    .clickable-name{cursor:pointer;color:var(--primary);font-weight:500;transition:color .2s;text-decoration:underline dotted}.clickable-name:hover{color:var(--primary-dark)}
-    .updating .fab{animation:pulse .8s ease infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+    .hour-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.hour-detail-grid .list{max-height:300px;overflow-y:auto}
+    @media(max-width:860px){.app-wrapper{flex-direction:column}.sidebar-panel{position:fixed;top:0;left:0;width:100%!important;height:100vh;border-radius:0;z-index:999;transform:translateX(-100%);transition:transform .35s ease;box-shadow:0 0 40px rgba(0,0,0,0.2)}.sidebar-panel.open{transform:translateX(0);width:100%!important}.top-bar{flex-direction:column;align-items:stretch;border-radius:24px}.user-info{flex-wrap:wrap}.metric-grid{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}.metric-value{font-size:24px}.qual-individual-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}}@media(max-width:480px){body{padding:12px}.login-container{margin:40px auto;padding:24px 16px}.card{padding:16px}.modal-content{padding:20px}.hour-detail-grid{grid-template-columns:1fr}.top-bar{padding:10px}.metric-grid{grid-template-columns:1fr 1fr}.qual-individual-grid{grid-template-columns:1fr 1fr}}@media(orientation:landscape)and(max-height:500px){.login-container{margin:20px auto;padding:20px}.top-bar{padding:8px 14px}.metric-grid{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}.metric-card{padding:10px}.metric-value{font-size:20px}}.updating .fab{animation:pulse .8s ease infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
   </style>
 </head>
 <body>
@@ -39,9 +38,9 @@
   <!-- LOGIN -->
   <div id="loginContainer" class="login-container">
     <h2>⚡ Neoenergia Brasília</h2>
-    <p class="sub">Gestão de Produtividade + Monitorias</p>
-    <div><input type="text" id="matricula" placeholder="Matrícula" autocomplete="off"></div>
-    <div style="margin-top:12px;"><input type="password" id="senha" placeholder="Senha"></div>
+    <p class="sub">Gestão de Produtividade + Monitorias + Qualidade</p>
+    <div><input type="text" id="matricula" placeholder="Matrícula" autocomplete="off" /></div>
+    <div style="margin-top:12px;"><input type="password" id="senha" placeholder="Senha" /></div>
     <button id="btnLogin" class="btn">Entrar</button>
     <div id="loginError" class="error-msg"></div>
   </div>
@@ -60,7 +59,7 @@
           <div><h4>⏱️ Notas da última hora</h4><div id="lastHourNotesList"></div></div>
           <div id="teamNotesSection" style="display:none; margin-top:16px;">
             <h4>📌 Última nota de cada atendente</h4>
-            <input type="text" id="filtroMatricula" placeholder="Filtrar por nome ou matrícula" style="width:100%; margin-bottom:8px; padding:8px 14px; border-radius:40px; border:1px solid var(--glass-border); background:rgba(255,255,255,0.4); backdrop-filter:blur(4px); color:var(--text);">
+            <input type="text" id="filtroMatricula" placeholder="Filtrar por nome ou matrícula" style="width:100%; margin-bottom:8px; padding:8px 14px; border-radius:40px; border:1px solid var(--glass-border); background:rgba(255,255,255,0.4); backdrop-filter:blur(4px); color:var(--text);" />
             <div id="teamNotesList"></div>
           </div>
         </div>
@@ -76,14 +75,14 @@
             <button id="toggleSupervisorBtn" class="btn" style="display:none;">🔄 Modo Supervisor</button>
             <button id="searchIconBtn" style="background:transparent; border:none; font-size:24px; cursor:pointer; color:var(--text);">🔍</button>
           </div>
-          <div class="flex" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
             <button id="linksUteisBtn" class="btn" style="background:#6c757d;">🔗 Links Úteis</button>
             <a href="https://wondrous-maamoul-c490d6.netlify.app/" target="_blank" class="btn" style="text-decoration:none;">✉️ Gerar resposta</a>
             <button id="logoutBtn" class="btn-logout">🚪 Sair</button>
           </div>
         </div>
 
-        <!-- Métricas principais -->
+        <!-- MÉTRICAS PRINCIPAIS -->
         <div class="metric-grid">
           <div class="metric-card" style="border-left:4px solid var(--primary);">
             <span class="metric-icon">📆</span>
@@ -119,7 +118,7 @@
           </div>
         </div>
 
-        <!-- Métricas Cria vs Backlog -->
+        <!-- MÉTRICAS CRIA vs BACKLOG -->
         <div class="metric-grid">
           <div class="metric-card" style="border-left:4px solid #2ecc71;">
             <span class="metric-icon">✅</span>
@@ -162,7 +161,7 @@
           </div>
         </div>
 
-        <!-- Progresso -->
+        <!-- PROGRESSO -->
         <div class="card">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span><strong>Progresso da meta diária</strong></span>
@@ -171,17 +170,39 @@
           <div class="progress-bar"><div class="progress-fill" id="barDia"></div></div>
           <div id="metaIndividualArea"></div>
           <div id="metaEquipeArea" style="display:none; margin-top:16px; border-top:1px solid var(--glass-border); padding-top:16px;">
-            <label><strong>👥 Notas a tratar hoje (equipe):</strong> <input type="number" id="metaEquipeDia" style="width:120px; padding:8px 12px; border-radius:40px; border:1px solid var(--glass-border); background:rgba(255,255,255,0.4); backdrop-filter:blur(4px); color:var(--text);"> notas</label>
+            <label><strong>👥 Notas a tratar hoje (equipe):</strong> <input type="number" id="metaEquipeDia" style="width:120px; padding:8px 12px; border-radius:40px; border:1px solid var(--glass-border); background:rgba(255,255,255,0.4); backdrop-filter:blur(4px); color:var(--text);" /> notas</label>
             <div style="margin-top:8px;"><span id="integrantesEquipe"></span> integrantes ativos no mês</div>
           </div>
           <div id="supervisorSettings" style="display:none;" class="supervisor-settings">
             <label>🎯 Meta diária por atendente:
-              <input type="number" id="metaDiariaGlobalInput" min="1" max="200" value="40">
+              <input type="number" id="metaDiariaGlobalInput" min="1" max="200" value="40" />
             </label>
             <label>📊 Meta geral do dia (equipe):
-              <input type="number" id="metaGeralDiaInput" min="1" max="2000" value="600">
+              <input type="number" id="metaGeralDiaInput" min="1" max="2000" value="600" />
             </label>
             <span id="metaGeralStatus" style="font-weight:600; margin-left:8px;"></span>
+          </div>
+        </div>
+
+        <!-- ===== QUALIDADE INDIVIDUAL ===== -->
+        <div class="card" id="qualidadeIndividualCard">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <strong>📊 Qualidade Individual</strong>
+            <span style="font-size:12px; color:var(--text-muted);">Meta: ≥ 96%</span>
+          </div>
+          <div id="qualIndividualContainer" style="margin-top:12px;">
+            <div class="text-muted" style="color:var(--text-muted); text-align:center; padding:12px;">Carregando dados de qualidade...</div>
+          </div>
+        </div>
+
+        <!-- ===== QUALIDADE DA EQUIPE ===== -->
+        <div class="card" id="qualidadeEquipeCard">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <strong>🏆 Qualidade da Equipe</strong>
+            <span style="font-size:12px; color:var(--text-muted);">Meta: ≥ 96%</span>
+          </div>
+          <div id="qualEquipeContainer" style="margin-top:12px;">
+            <div class="text-muted" style="color:var(--text-muted); text-align:center; padding:12px;">Carregando dados da equipe...</div>
           </div>
         </div>
 
@@ -196,13 +217,13 @@
           </div>
         </div>
 
-        <!-- Ranking (Supervisor) -->
+        <!-- RANKING (Supervisor) -->
         <div id="rankingArea" class="card" style="display:none;">
           <div><strong>🏆 Ranking de produção diária</strong></div>
           <div id="rankingList" style="margin-top:12px;"></div>
         </div>
 
-        <!-- Tabela individual (Supervisor) com NOMES -->
+        <!-- TABELA INDIVIDUAL (Supervisor) -->
         <div id="individualProductionArea" class="card" style="display:none;">
           <div><strong>📊 Produtividade individual detalhada</strong></div>
           <div class="table-wrapper">
@@ -213,18 +234,18 @@
           </div>
         </div>
 
-        <!-- Gráfico status -->
+        <!-- GRÁFICO STATUS -->
         <div class="card">
           <div><strong>📊 Distribuição por status</strong></div>
           <canvas id="statusChart" height="140"></canvas>
         </div>
 
-        <!-- Tabela completa com nome e link -->
+        <!-- TABELA COMPLETA -->
         <div class="card">
           <div><strong>🔎 Registros</strong> <span id="tabScopeMsg" style="font-size:12px; color:var(--text-muted);"></span></div>
           <div class="filter-bar">
-            <input type="text" id="searchTab" placeholder="Buscar (data, matrícula, nota...)">
-            <input type="text" id="filtroMatriculaTabela" placeholder="Filtrar por matrícula específica">
+            <input type="text" id="searchTab" placeholder="Buscar (data, matrícula, nota...)" />
+            <input type="text" id="filtroMatriculaTabela" placeholder="Filtrar por matrícula específica" />
             <select id="filterStatus">
               <option value="">Todos status</option>
               <option value="FINL">Finalizado</option>
@@ -232,7 +253,7 @@
               <option value="VERI">Verificação</option>
               <option value="VITE">Visita Técnica</option>
             </select>
-            <input type="date" id="filtroDataRegistros" placeholder="Filtrar por data">
+            <input type="date" id="filtroDataRegistros" placeholder="Filtrar por data" />
             <button class="btn-clear-data" id="limparFiltrosRegistros">Limpar</button>
           </div>
           <div class="table-wrapper">
@@ -254,11 +275,12 @@
     <div class="modal-content">
       <button class="modal-close" id="closeModalBtn">✕</button>
       <h2>🔎 Pesquisar nota</h2>
-      <input type="text" id="modalNotaBusca" placeholder="Número da nota" style="width:100%; padding:14px; border-radius:16px; border:1px solid var(--glass-border); background:rgba(255,255,255,0.5); backdrop-filter:blur(4px); color:var(--text); font-size:16px;">
+      <input type="text" id="modalNotaBusca" placeholder="Número da nota" style="width:100%; padding:14px; border-radius:16px; border:1px solid var(--glass-border); background:rgba(255,255,255,0.5); backdrop-filter:blur(4px); color:var(--text); font-size:16px;" />
       <button id="modalBuscarBtn" class="btn" style="width:100%; margin-top:12px;">Buscar</button>
       <div id="modalResultado" style="margin-top:16px;"></div>
     </div>
   </div>
+
   <div id="linksModal" class="modal">
     <div class="modal-content">
       <button class="modal-close" id="closeLinksBtn">✕</button>
@@ -267,6 +289,7 @@
       <div id="linksList" style="margin-top:16px;"></div>
     </div>
   </div>
+
   <div id="hourDetailModal" class="modal">
     <div class="modal-content" style="max-width:800px;">
       <button class="modal-close" id="closeHourDetailBtn">✕</button>
@@ -280,7 +303,6 @@
     </div>
   </div>
 
-  <!-- NOVO MODAL: Detalhes completos do atendente -->
   <div id="agentDetailModal" class="modal">
     <div class="modal-content">
       <button class="modal-close" id="closeAgentDetailBtn">✕</button>
@@ -291,7 +313,7 @@
 
   <script>
     // ============================================================
-    // CONFIGURAÇÕES GERAIS
+    // CONFIGURAÇÕES
     // ============================================================
     const SHEET_ID = '18fouQ0lBF5fKKB8kovxNNK-ww187kQVqZiETMfK-x3o';
     const LINKS_SHEET_ID = '1m_sD07RmMn4W-i7-aLtCOL8N1SntoZnp03aExbn6F6c';
@@ -305,10 +327,15 @@
     const ABA_MONITORIA = 'Monitorias';
     const ABA_LINKS = 'Página1';
 
+    const ABA_QUAL_INDIVIDUAL = 'QUALIDADE INDIVIDUAL SEMANA 1';
+    const ABA_QUAL_EQUIPE = 'QUALIDADE DA EQUIPE';
+
     const DIAS_UTEIS_MES = 20;
     const REFRESH_INTERVAL = 15000;
 
     let monitoriasData = [];
+    let qualidadeIndividualData = [];
+    let qualidadeEquipeData = [];
 
     // ============================================================
     // ESTADO GLOBAL
@@ -322,7 +349,9 @@
     let metaDiariaGlobal = parseInt(localStorage.getItem('metaDiariaGlobal_Neoenergia')) || 40;
     let metaGeralDia = parseInt(localStorage.getItem('metaGeralDia_Neoenergia')) || 600;
     let metaEquipeDia = 200;
-    let statusChart = null, hourlyChart = null, hourDetailChart = null;
+    let statusChart = null,
+      hourlyChart = null,
+      hourDetailChart = null;
     let refreshInterval = null;
 
     // ============================================================
@@ -363,7 +392,7 @@
     }
 
     // ============================================================
-    // CARREGAR LINKS ÚTEIS
+    // CARREGAR LINKS
     // ============================================================
     async function carregarLinksUteis() {
       try {
@@ -379,7 +408,7 @@
     }
 
     // ============================================================
-    // NORMALIZAÇÃO DE REGISTROS
+    // NORMALIZAÇÃO MELHORADA
     // ============================================================
     function normalizarRegistro(row) {
       const keys = Object.keys(row);
@@ -395,7 +424,8 @@
       const matriculaKey = findKey(['matrícula', 'matricula']);
       const notaKey = findKey(['nº da nota', 'n.º da nota', 'nota', 'numero nota']);
       const statusKey = findKey(['status']);
-      const tipoKey = findKey(['back', 'cria', 'tipo']);
+      // Melhor detecção para tipo (Cria/Backlog)
+      const tipoKey = findKey(['back', 'cria', 'tipo', 'categoria', 'grupo']);
 
       let timestamp = row[timestampKey] || '';
       let mat = row[matriculaKey] || '';
@@ -408,11 +438,14 @@
 
       let tipoRaw = (row[tipoKey] || "").toLowerCase().trim();
       let tipo = "";
-      if (tipoRaw.includes("cria")) tipo = "cria";
-      else if (tipoRaw.includes("backlog")) tipo = "backlog";
+      // Verifica se o valor contém "cria" ou "backlog/back"
+      if (tipoRaw.includes("cria") || tipoRaw.includes("criar")) tipo = "cria";
+      else if (tipoRaw.includes("backlog") || tipoRaw.includes("back") || tipoRaw.includes("bk")) tipo = "backlog";
+      // Se não encontrou, tenta verificar pelo cabeçalho (já que o valor pode estar em outra coluna)
+      // Mas aqui já pegamos o valor, então se ficou vazio, assumimos que é "cria" por padrão? Não, melhor deixar vazio.
 
       return { "Carimbo de data/hora": timestamp, "Matricula": mat, "Nº da nota": nota, "Status": statusRaw,
-      "Back ou Cria?": tipo };
+        "Back ou Cria?": tipo };
     }
 
     // ============================================================
@@ -433,6 +466,109 @@
       allRows = todos;
       console.log(`✅ Total de registros consolidados: ${allRows.length}`);
       await carregarMonitorias();
+      await carregarQualidade();
+    }
+
+    // ============================================================
+    // CARREGAR MONITORIAS
+    // ============================================================
+    async function carregarMonitorias() {
+      try {
+        const dados = await carregarAba(SHEET_ID, ABA_MONITORIA);
+        if (!dados || dados.length === 0) { monitoriasData = []; return; }
+        const cabecalho = Object.keys(dados[0]);
+        const colDataNota = cabecalho.find(c => /data da nota/i.test(c));
+        const colDataAuditoria = cabecalho.find(c => /data da auditoria/i.test(c));
+        const colMatricula = cabecalho.find(c => /matrícula|matricula/i.test(c));
+        const colColaborador = cabecalho.find(c => /colaborador/i.test(c));
+        const colNota = cabecalho.find(c => /notas|nota/i.test(c) && !/data/i.test(c));
+        const colMotivo = cabecalho.find(c => /motivo|erro/i.test(c));
+        const colOrientacao = cabecalho.find(c => /orientação|orientacao/i.test(c));
+
+        monitoriasData = dados.map(row => ({
+          dataNota: colDataNota ? row[colDataNota] : '',
+          dataAuditoria: colDataAuditoria ? row[colDataAuditoria] : '',
+          matricula: colMatricula ? String(row[colMatricula]).trim() : '',
+          colaborador: colColaborador ? row[colColaborador] : '',
+          nota: colNota ? row[colNota] : '',
+          motivo: colMotivo ? row[colMotivo] : '',
+          orientacao: colOrientacao ? row[colOrientacao] : ''
+        }));
+        console.log(`✅ Monitorias carregadas: ${monitoriasData.length} registros.`);
+      } catch (e) {
+        console.warn('Erro ao carregar monitorias:', e);
+        monitoriasData = [];
+      }
+    }
+
+    // ============================================================
+    // CARREGAR QUALIDADE (usando matrícula)
+    // ============================================================
+    async function carregarQualidade() {
+      // 1) QUALIDADE INDIVIDUAL SEMANA 1
+      try {
+        const dados = await carregarAba(SHEET_ID, ABA_QUAL_INDIVIDUAL);
+        if (dados && dados.length > 0) {
+          const cab = Object.keys(dados[0]);
+          const colMat = cab.find(c => /matrícula|matricula/i.test(c));
+          const colNome = cab.find(c => /nome|colaborador/i.test(c));
+          const colSemana = cab.find(c => /semana/i.test(c));
+          const colQual = cab.find(c => /qualidade/i.test(c));
+
+          qualidadeIndividualData = dados.map(row => {
+            let mat = colMat ? String(row[colMat]).trim() : '';
+            let nome = colNome ? String(row[colNome]).trim() : '';
+            let semana = colSemana ? parseFloat(row[colSemana]) : 0;
+            let qual = colQual ? parseFloat(String(row[colQual]).replace('%', '').replace(',', '.')) : 0;
+            if (isNaN(qual)) qual = 0;
+            return { matricula: mat, nome: nome, semana: semana, qualidade: qual };
+          }).filter(r => r.matricula);
+
+          // Agrupar por matrícula
+          const grouped = new Map();
+          for (const item of qualidadeIndividualData) {
+            if (!grouped.has(item.matricula)) {
+              grouped.set(item.matricula, { matricula: item.matricula, nome: item.nome, semana1: null, semana2: null });
+            }
+            const entry = grouped.get(item.matricula);
+            if (item.semana === 1) entry.semana1 = item.qualidade;
+            else if (item.semana === 2) entry.semana2 = item.qualidade;
+            if (item.nome && !entry.nome) entry.nome = item.nome;
+          }
+          qualidadeIndividualData = Array.from(grouped.values());
+          console.log(`✅ Qualidade individual: ${qualidadeIndividualData.length} pessoas.`);
+        } else {
+          qualidadeIndividualData = [];
+          console.warn('⚠️ Aba QUALIDADE INDIVIDUAL SEMANA 1 vazia.');
+        }
+      } catch (e) {
+        console.warn('Erro ao carregar qualidade individual:', e);
+        qualidadeIndividualData = [];
+      }
+
+      // 2) QUALIDADE DA EQUIPE
+      try {
+        const dados = await carregarAba(SHEET_ID, ABA_QUAL_EQUIPE);
+        if (dados && dados.length > 0) {
+          const cab = Object.keys(dados[0]);
+          const colSemana = cab.find(c => /semana/i.test(c));
+          const colQual = cab.find(c => /qualidade/i.test(c));
+
+          qualidadeEquipeData = dados.map(row => {
+            let semana = colSemana ? parseFloat(row[colSemana]) : 0;
+            let qual = colQual ? parseFloat(String(row[colQual]).replace('%', '').replace(',', '.')) : 0;
+            if (isNaN(qual)) qual = 0;
+            return { semana, qualidade: qual };
+          }).filter(r => r.semana > 0);
+          console.log(`✅ Qualidade da equipe: ${qualidadeEquipeData.length} semanas.`);
+        } else {
+          qualidadeEquipeData = [];
+          console.warn('⚠️ Aba QUALIDADE DA EQUIPE vazia.');
+        }
+      } catch (e) {
+        console.warn('Erro ao carregar qualidade da equipe:', e);
+        qualidadeEquipeData = [];
+      }
     }
 
     // ============================================================
@@ -472,63 +608,7 @@
     }
 
     // ============================================================
-    // CARREGAR MONITORIAS
-    // ============================================================
-    async function carregarMonitorias() {
-      try {
-        const dados = await carregarAba(SHEET_ID, ABA_MONITORIA);
-        if (!dados || dados.length === 0) { monitoriasData = []; return; }
-        const cabecalho = Object.keys(dados[0]);
-        const colDataNota = cabecalho.find(c => /data da nota/i.test(c));
-        const colDataAuditoria = cabecalho.find(c => /data da auditoria/i.test(c));
-        const colMatricula = cabecalho.find(c => /matrícula|matricula/i.test(c));
-        const colColaborador = cabecalho.find(c => /colaborador/i.test(c));
-        const colNota = cabecalho.find(c => /notas|nota/i.test(c) && !/data/i.test(c));
-        const colMotivo = cabecalho.find(c => /motivo|erro/i.test(c));
-        const colOrientacao = cabecalho.find(c => /orientação|orientacao/i.test(c));
-
-        monitoriasData = dados.map(row => ({
-          dataNota: colDataNota ? row[colDataNota] : '',
-          dataAuditoria: colDataAuditoria ? row[colDataAuditoria] : '',
-          matricula: colMatricula ? String(row[colMatricula]).trim() : '',
-          colaborador: colColaborador ? row[colColaborador] : '',
-          nota: colNota ? row[colNota] : '',
-          motivo: colMotivo ? row[colMotivo] : '',
-          orientacao: colOrientacao ? row[colOrientacao] : ''
-        }));
-        console.log(`✅ Monitorias carregadas: ${monitoriasData.length} registros.`);
-      } catch (e) {
-        console.warn('Erro ao carregar monitorias:', e);
-        monitoriasData = [];
-      }
-    }
-
-    function renderizarMonitorias() {
-      const container = document.getElementById('monitoriasBody');
-      const countSpan = document.getElementById('monitoriasCount');
-      if (!container) return;
-      const matriculaUsuario = currentUser ? currentUser.matricula : '';
-      const minhas = monitoriasData.filter(item => item.matricula === matriculaUsuario);
-      if (minhas.length === 0) {
-        container.innerHTML =
-          `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Nenhuma monitoria encontrada para a matrícula <strong>${matriculaUsuario}</strong>.</td></tr>`;
-        if (countSpan) countSpan.textContent = '';
-        return;
-      }
-      if (countSpan) countSpan.textContent = `(${minhas.length} registro${minhas.length > 1 ? 's' : ''})`;
-      container.innerHTML = minhas.map(item => `
-          <tr>
-            <td>${formatDate(item.dataNota)}</td>
-            <td>${formatDate(item.dataAuditoria)}</td>
-            <td>${item.nota || '-'}</td>
-            <td>${item.motivo || '-'}</td>
-            <td style="white-space:pre-wrap; max-width:300px;">${item.orientacao || '-'}</td>
-          </tr>
-        `).join('');
-    }
-
-    // ============================================================
-    // FUNÇÕES DE NOMES E FILTROS
+    // NOMES
     // ============================================================
     function obterNomeMatricula(mat) {
       const matNorm = String(mat).trim();
@@ -555,10 +635,14 @@
       const agora = new Date();
       const umaHoraAtras = new Date(agora.getTime() - 3600000);
 
-      let feitasHoje = 0, feitasMes = 0;
-      let finalizadasCriaHoje = 0, finalizadasCriaMes = 0;
-      let finalizadasBacklogHoje = 0, finalizadasBacklogMes = 0;
-      let veriRediCria = 0, veriRediBacklog = 0;
+      let feitasHoje = 0,
+        feitasMes = 0;
+      let finalizadasCriaHoje = 0,
+        finalizadasCriaMes = 0;
+      let finalizadasBacklogHoje = 0,
+        finalizadasBacklogMes = 0;
+      let veriRediCria = 0,
+        veriRediBacklog = 0;
       let viteTotal = 0;
       let notasUltimaHora = 0;
       const statusCount = { FINL: 0, REDI: 0, VERI: 0, VITE: 0 };
@@ -663,7 +747,7 @@
     }
 
     // ============================================================
-    // FUNÇÃO PARA EXIBIR DETALHES COMPLETOS DO ATENDENTE (NOVO)
+    // EXIBIR DETALHES DO ATENDENTE
     // ============================================================
     function showAgentDetails(matricula) {
       const modal = document.getElementById('agentDetailModal');
@@ -674,7 +758,6 @@
       const nome = obterNome(matNorm);
       title.innerText = `📊 Detalhes de ${nome} (${matNorm})`;
 
-      // Filtra as notas do atendente
       const notas = allRows.filter(row => String(row.Matricula).trim() === matNorm);
       if (notas.length === 0) {
         content.innerHTML = `<div class="text-muted">Nenhuma nota encontrada para este atendente.</div>`;
@@ -682,11 +765,9 @@
         return;
       }
 
-      // Calcula métricas
       const metrics = calcularMetricas(notas);
       const adicionais = calcularAdicionais(metrics.feitasHoje, metrics.feitasMes);
 
-      // Última nota
       const sorted = [...notas].sort((a, b) => {
         const tsA = parseTimestampFull(a["Carimbo de data/hora"]);
         const tsB = parseTimestampFull(b["Carimbo de data/hora"]);
@@ -738,7 +819,146 @@
     }
 
     // ============================================================
-    // ATUALIZAÇÃO DA INTERFACE
+    // RENDERIZAR QUALIDADE
+    // ============================================================
+    function renderizarQualidade() {
+      // --- INDIVIDUAL ---
+      const container = document.getElementById('qualIndividualContainer');
+      if (!qualidadeIndividualData || qualidadeIndividualData.length === 0) {
+        container.innerHTML =
+          `<div class="text-muted" style="color:var(--text-muted); text-align:center; padding:12px;">Nenhum dado de qualidade individual disponível.</div>`;
+      } else {
+        let html = `<div class="qual-individual-grid">`;
+        const sorted = [...qualidadeIndividualData].sort((a, b) => (a.nome || a.matricula).localeCompare(b.nome || b
+        .matricula));
+        for (const item of sorted) {
+          const s1 = item.semana1 !== null && !isNaN(item.semana1) ? item.semana1 : null;
+          const s2 = item.semana2 !== null && !isNaN(item.semana2) ? item.semana2 : null;
+          const nomeExib = item.nome || item.matricula;
+
+          let badge1 = '',
+            badge2 = '';
+          if (s1 !== null) {
+            if (s1 >= 96) badge1 = `<span class="qual-badge green">${s1}%</span>`;
+            else if (s1 >= 80) badge1 = `<span class="qual-badge yellow">${s1}%</span>`;
+            else badge1 = `<span class="qual-badge red">${s1}%</span>`;
+          } else {
+            badge1 = `<span class="qual-badge" style="background:var(--glass-border);color:var(--text-muted);">—</span>`;
+          }
+          if (s2 !== null) {
+            if (s2 >= 96) badge2 = `<span class="qual-badge green">${s2}%</span>`;
+            else if (s2 >= 80) badge2 = `<span class="qual-badge yellow">${s2}%</span>`;
+            else badge2 = `<span class="qual-badge red">${s2}%</span>`;
+          } else {
+            badge2 = `<span class="qual-badge" style="background:var(--glass-border);color:var(--text-muted);">—</span>`;
+          }
+
+          let trendHtml = '';
+          if (s1 !== null && s2 !== null) {
+            const diff = s2 - s1;
+            if (diff > 0.5) trendHtml = `<span class="q-trend up">▲ +${diff.toFixed(1)}%</span>`;
+            else if (diff < -0.5) trendHtml = `<span class="q-trend down">▼ ${diff.toFixed(1)}%</span>`;
+            else trendHtml = `<span class="q-trend same">➖</span>`;
+          } else if (s2 !== null && s1 === null) {
+            trendHtml = `<span class="q-trend up">▲</span>`;
+          } else if (s1 !== null && s2 === null) {
+            trendHtml = `<span class="q-trend same">⏳</span>`;
+          } else {
+            trendHtml = `<span class="q-trend same">—</span>`;
+          }
+
+          html += `
+            <div class="qual-card" onclick="showAgentDetails('${item.matricula}')">
+              <div class="q-nome">${nomeExib}</div>
+              <div class="q-mat">${item.matricula}</div>
+              <div class="q-row"><span>Semana 1</span> ${badge1}</div>
+              <div class="q-row"><span>Semana 2</span> ${badge2} ${trendHtml}</div>
+            </div>
+          `;
+        }
+        html += `</div>`;
+        container.innerHTML = html;
+      }
+
+      // --- EQUIPE ---
+      const equipeContainer = document.getElementById('qualEquipeContainer');
+      if (!qualidadeEquipeData || qualidadeEquipeData.length === 0) {
+        equipeContainer.innerHTML =
+          `<div class="text-muted" style="color:var(--text-muted); text-align:center; padding:12px;">Nenhum dado de qualidade da equipe disponível.</div>`;
+      } else {
+        const sorted = [...qualidadeEquipeData].sort((a, b) => b.semana - a.semana);
+        const ultima = sorted[0];
+        const qual = ultima.qualidade;
+
+        let statusText, statusColor, bgColor;
+        if (qual >= 96) {
+          statusText = '✅ Excelente!';
+          statusColor = 'var(--qual-green)';
+          bgColor = 'var(--qual-green-bg)';
+        } else if (qual >= 80) {
+          statusText = '⚠️ Atenção';
+          statusColor = 'var(--qual-yellow)';
+          bgColor = 'var(--qual-yellow-bg)';
+        } else {
+          statusText = '🔴 Preocupante';
+          statusColor = 'var(--qual-red)';
+          bgColor = 'var(--qual-red-bg)';
+        }
+
+        equipeContainer.innerHTML = `
+          <div class="qual-equipe-card" style="background:${bgColor}; border-color:${statusColor};">
+            <div class="q-big" style="color:${statusColor};">${qual}%</div>
+            <div class="q-label">Qualidade da equipe — Semana ${ultima.semana}</div>
+            <div class="q-status" style="color:${statusColor};">${statusText}</div>
+            <div style="margin-top:8px; font-size:12px; color:var(--text-muted);">Meta: ≥ 96%</div>
+          </div>
+        `;
+
+        if (sorted.length > 1) {
+          const anterior = sorted[1];
+          const diff = ultima.qualidade - anterior.qualidade;
+          let diffHtml = '';
+          if (diff > 0.5) diffHtml = `▲ +${diff.toFixed(1)}% em relação à semana ${anterior.semana}`;
+          else if (diff < -0.5) diffHtml = `▼ ${diff.toFixed(1)}% em relação à semana ${anterior.semana}`;
+          else diffHtml = `➖ estável em relação à semana ${anterior.semana}`;
+          equipeContainer.innerHTML += `
+            <div style="text-align:center; margin-top:10px; font-size:13px; color:var(--text-muted);">
+              ${diffHtml}
+            </div>
+          `;
+        }
+      }
+    }
+
+    // ============================================================
+    // RENDERIZAR MONITORIAS
+    // ============================================================
+    function renderizarMonitorias() {
+      const container = document.getElementById('monitoriasBody');
+      const countSpan = document.getElementById('monitoriasCount');
+      if (!container) return;
+      const matriculaUsuario = currentUser ? currentUser.matricula : '';
+      const minhas = monitoriasData.filter(item => item.matricula === matriculaUsuario);
+      if (minhas.length === 0) {
+        container.innerHTML =
+          `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Nenhuma monitoria encontrada para a matrícula <strong>${matriculaUsuario}</strong>.</td></tr>`;
+        if (countSpan) countSpan.textContent = '';
+        return;
+      }
+      if (countSpan) countSpan.textContent = `(${minhas.length} registro${minhas.length > 1 ? 's' : ''})`;
+      container.innerHTML = minhas.map(item => `
+          <tr>
+            <td>${formatDate(item.dataNota)}</td>
+            <td>${formatDate(item.dataAuditoria)}</td>
+            <td>${item.nota || '-'}</td>
+            <td>${item.motivo || '-'}</td>
+            <td style="white-space:pre-wrap; max-width:300px;">${item.orientacao || '-'}</td>
+          </tr>
+        `).join('');
+    }
+
+    // ============================================================
+    // ATUALIZAÇÃO PRINCIPAL
     // ============================================================
     async function atualizarTudo() {
       await carregarDadosConsolidados();
@@ -880,6 +1100,7 @@
 
       renderizarTabelaCompleta(dadosFiltrados);
       renderizarMonitorias();
+      renderizarQualidade();
 
       if (isSupervisor) {
         document.getElementById('metaDiariaGlobalInput').value = metaDiariaGlobal;
@@ -891,7 +1112,7 @@
     }
 
     // ============================================================
-    // RENDERIZAR TABELA COMPLETA COM NOME E LINK
+    // TABELA COMPLETA
     // ============================================================
     function renderizarTabelaCompleta(dados) {
       const search = document.getElementById('searchTab')?.value.toLowerCase() || '';
@@ -960,13 +1181,15 @@
       document.getElementById('tabCount').innerText = `Exibindo ${filtered.length} de ${dados.length} registros`;
     }
 
-    async function carregarDadosEAtualizar() { await atualizarTudo(); }
-
+    // ============================================================
+    // REFRESH
+    // ============================================================
     async function refresh() {
       const fab = document.getElementById('refreshFab');
       fab.style.transform = 'rotate(360deg)';
       document.body.classList.add('updating');
-      await carregarDadosEAtualizar();
+      await carregarDadosConsolidados();
+      await atualizarTudo();
       setTimeout(() => { fab.style.transform = '';
         document.body.classList.remove('updating'); }, 300);
     }
@@ -1180,6 +1403,8 @@
       setTimeout(() => e.style.display = 'none', 3000);
     }
 
+    async function carregarDadosEAtualizar() { await atualizarTudo(); }
+
     // ============================================================
     // INICIALIZAÇÃO
     // ============================================================
@@ -1254,7 +1479,7 @@
       document.getElementById('closeSidebarBtn').addEventListener('click', () => document.getElementById('sidebarPanel')
         .classList.remove('open'));
 
-      // Configurar modal de detalhes do atendente
+      // Modal de detalhes do atendente
       const agentModal = document.getElementById('agentDetailModal');
       document.getElementById('closeAgentDetailBtn').addEventListener('click', () => agentModal.style.display = 'none');
       window.addEventListener('click', (e) => { if (e.target === agentModal) agentModal.style.display = 'none'; });
