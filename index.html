@@ -958,6 +958,10 @@
     const ABAS_PRODUTIVIDADE = ['Dashboard', 'Produtividade Mensal Roniton'];
     const ABA_MONITORIA = 'Monitorias';
     const ABA_LINKS = 'Página1';
+    // Novas abas de qualidade
+    const ABA_QUALIDADE_INDIVIDUAL = 'Qualidade Individual';
+    const ABA_QUALIDADE_EQUIPE = 'Qualidade da Equipe';
+
     const DIAS_UTEIS_MES = 20;
     const REFRESH_INTERVAL = 15000;
 
@@ -972,6 +976,10 @@
     let metaEquipeDia = 200;
     let statusChart = null, hourlyChart = null, hourDetailChart = null;
     let refreshInterval = null;
+
+    // Dados de qualidade
+    let qualidadeIndividualData = [];
+    let qualidadeEquipeData = [];
 
     // ============================================================
     // FUNÇÕES GOOGLE SHEETS
@@ -1038,6 +1046,11 @@
       allRows = todos;
       console.log(`✅ Total de registros consolidados: ${allRows.length}`);
       await carregarMonitorias();
+      // Carregar dados de qualidade
+      qualidadeIndividualData = await carregarAba(SHEET_ID, ABA_QUALIDADE_INDIVIDUAL);
+      qualidadeEquipeData = await carregarAba(SHEET_ID, ABA_QUALIDADE_EQUIPE);
+      console.log(`✅ Qualidade Individual: ${qualidadeIndividualData.length} registros`);
+      console.log(`✅ Qualidade da Equipe: ${qualidadeEquipeData.length} registros`);
     }
 
     // ============================================================
@@ -1135,7 +1148,7 @@
     }
 
     // ============================================================
-    // CÁLCULO DE MÉTRICAS (incluindo qualidade real)
+    // CÁLCULO DE MÉTRICAS DE PRODUTIVIDADE
     // ============================================================
     function calcularMetricas(rows) {
       const hoje = new Date();
@@ -1215,27 +1228,43 @@
     }
 
     // ============================================================
-    // CÁLCULO DE QUALIDADE (REAL, a partir das monitorias)
+    // FUNÇÕES DE QUALIDADE (lendo das abas específicas)
     // ============================================================
-    function calcularQualidade(matricula) {
-      const monitorias = monitoriasData.filter(item => item.matricula === matricula);
-      if (monitorias.length === 0) return null; // sem dados
-      const total = monitorias.length;
-      const semErro = monitorias.filter(item => !item.motivo || item.motivo.trim() === '').length;
-      return (semErro / total) * 100;
+    function obterQualidadeIndividual(matricula) {
+      if (!qualidadeIndividualData.length) return null;
+      const filtrados = qualidadeIndividualData.filter(item => {
+        const mat = String(item.MATRICULA || '').trim();
+        return mat === matricula;
+      });
+      if (!filtrados.length) return null;
+      // Ordenar por data decrescente (mais recente primeiro)
+      filtrados.sort((a,b) => {
+        const da = parseDataHora(a.DATA);
+        const db = parseDataHora(b.DATA);
+        if (!da && !db) return 0;
+        if (!da) return 1;
+        if (!db) return -1;
+        return db - da;
+      });
+      const maisRecente = filtrados[0];
+      const valor = parseFloat(maisRecente['QUALIDADE INDIVIDUAL']);
+      return isNaN(valor) ? null : valor;
     }
 
-    function calcularQualidadeEquipe() {
-      // Média das qualidades individuais de todos os atendentes que têm monitorias
-      const mats = [...new Set(monitoriasData.map(item => item.matricula).filter(Boolean))];
-      if (mats.length === 0) return null;
-      let soma = 0, cont = 0;
-      for (const mat of mats) {
-        const q = calcularQualidade(mat);
-        if (q !== null) { soma += q;
-          cont++; }
-      }
-      return cont > 0 ? soma / cont : null;
+    function obterQualidadeEquipe() {
+      if (!qualidadeEquipeData.length) return null;
+      // Ordenar por data decrescente
+      const sorted = [...qualidadeEquipeData].sort((a,b) => {
+        const da = parseDataHora(a.DATA);
+        const db = parseDataHora(b.DATA);
+        if (!da && !db) return 0;
+        if (!da) return 1;
+        if (!db) return -1;
+        return db - da;
+      });
+      const maisRecente = sorted[0];
+      const valor = parseFloat(maisRecente['QUALIDADE DA EQUIPE']);
+      return isNaN(valor) ? null : valor;
     }
 
     // ============================================================
@@ -1252,7 +1281,7 @@
       if (notas.length === 0) { content.innerHTML = `<div class="text-muted">Nenhuma nota encontrada para este atendente.</div>`; modal.style.display = 'flex'; return; }
       const metrics = calcularMetricas(notas);
       const adicionais = calcularAdicionais(metrics.feitasHoje, metrics.feitasMes);
-      const q = calcularQualidade(matNorm);
+      const q = obterQualidadeIndividual(matNorm);
       const qualidadeDisplay = q !== null ? q.toFixed(1) + '%' : '—';
 
       const sorted = [...notas].sort((a, b) => {
@@ -1302,7 +1331,7 @@
     }
 
     // ============================================================
-    // ATUALIZAÇÃO DA INTERFACE (com qualidade real)
+    // ATUALIZAÇÃO DA INTERFACE
     // ============================================================
     async function atualizarTudo() {
       await carregarDadosConsolidados();
@@ -1347,12 +1376,12 @@
       const notasEquipe = isSupervisor ? metricsEquipe.notasUltimaHora : metrics.notasUltimaHora;
       document.getElementById('notasUltimaHoraEquipe').innerText = `equipe: ${notasEquipe}`;
 
-      // ===== WIDGET DE QUALIDADE (REAL) =====
+      // ===== WIDGET DE QUALIDADE (DADOS REAIS) =====
       let qualInd = null;
       if (currentUser) {
-        qualInd = calcularQualidade(currentUser.matricula);
+        qualInd = obterQualidadeIndividual(currentUser.matricula);
       }
-      let qualEq = calcularQualidadeEquipe();
+      let qualEq = obterQualidadeEquipe();
 
       const displayVal = (val) => val !== null ? val.toFixed(1) + '%' : '—';
       const displayProgress = (val) => val !== null ? val.toFixed(1) + '%' : '—';
